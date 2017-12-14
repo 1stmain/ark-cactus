@@ -6,7 +6,7 @@ class Kinect extends J4KSDK
     private KinectHelper kinectHelper;
     private boolean rightHandIsPushed = false;
     private boolean isInitialised = false;
-    private int oldRightHandZ;
+    private float oldRightHandZ = 0;
 
     Kinect(KinectHelper aKinectHelper)
     {
@@ -53,7 +53,7 @@ class Kinect extends J4KSDK
 
         if (!isInitialised)
         {
-            oldRightHandZ = (int) rightHandZ;
+            oldRightHandZ = rightHandZ;
             isInitialised = true;
         }
 
@@ -68,7 +68,6 @@ class Kinect extends J4KSDK
             rightHandIsPushed = false;
             kinectHelper.onRightHandPushed(false);
         }
-
 
         kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
     }
