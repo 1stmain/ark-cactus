@@ -5,14 +5,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -25,12 +23,13 @@ import java.util.concurrent.TimeUnit;
 
 public class MainApplication extends Application implements KinectHelper
 {
-    private GraphicsContext graphicsContext;
+    private GraphicsContext cursorGraphicsContext;
+    private GraphicsContext imageGraphicsContext;
     private Cursor cursor;
     private int oldRightHandX;
     private int oldRightHandY;
+    private ScrollPane scrollPane;
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
-    private GraphicsContext imageGraphicsContext;
 
     public static void main(String[] args)
     {
@@ -71,38 +70,38 @@ public class MainApplication extends Application implements KinectHelper
             System.exit(1);
         }
 
+        setImages();
+        setBlackShadowToAllButtons();
+
         StackPane rootNode = new StackPane();
-        AnchorPane anchorPane = new AnchorPane();
+        VBox vBox = new VBox();
+
+        HBox hBox = new HBox(32);
+        hBox.setPadding(new Insets(16, 16, 16, 16));
+
+        for (PictureButton pictureButton : pictureButtons)
+        {
+            hBox.getChildren().add(pictureButton.getImageView());
+        }
+
+        scrollPane = new ScrollPane(hBox);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         Canvas imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
-        anchorPane.getChildren().add(imageCanvas);
-        AnchorPane.setTopAnchor(imageCanvas, 0.0);
-
-        setImages();
-
-        setBlackShadowToAllButtons();
 
         DropShadow dropShadowRed = new DropShadow(16, Color.RED);
         pictureButtons.get(0).getImageView().setEffect(dropShadowRed);
 
         imageGraphicsContext.drawImage(pictureButtons.get(0).getImage(), 0, 0, Constants.STAGE_WIDTH, 636);
 
-        HBox hBox = new HBox(32);
-        hBox.setMinWidth(Constants.STAGE_WIDTH);
-        hBox.setAlignment(Pos.CENTER);
-        hBox.setPadding(new Insets(16, 32, 16, 32));
-        for (PictureButton pictureButton : pictureButtons)
-        {
-            hBox.getChildren().add(pictureButton.getImageView());
-        }
-        anchorPane.getChildren().add(hBox);
-        AnchorPane.setBottomAnchor(hBox, 0.0);
+        Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
+        cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
 
-        Canvas canvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
-        graphicsContext = canvas.getGraphicsContext2D();
+        vBox.getChildren().addAll(imageCanvas, scrollPane);
 
-        rootNode.getChildren().addAll(anchorPane, canvas);
+        rootNode.getChildren().addAll(vBox, cursorCanvas);
 
         Scene primaryScene = new Scene(rootNode);
 
@@ -111,17 +110,11 @@ public class MainApplication extends Application implements KinectHelper
         primaryStage.setFullScreen(true);
         primaryStage.show();
 
-        try
-        {
-            cursor = new Cursor();
-            cursor.setImage(new FileInputStream("images\\hand.png"));
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        initialiseKinect();
+    }
 
+    private void initialiseKinect()
+    {
         Kinect kinect = new Kinect(this);
         kinect.start(J4KSDK.SKELETON);
     }
@@ -130,6 +123,9 @@ public class MainApplication extends Application implements KinectHelper
     {
         try
         {
+            cursor = new Cursor();
+            cursor.setImage(new FileInputStream("images\\hand.png"));
+
             Image image1 = new Image(new FileInputStream("images\\image-01.jpeg"));
             ImageView imageView1 = new ImageView(image1);
             PictureButton pictureButton1 = new PictureButton(imageView1, image1);
@@ -155,11 +151,41 @@ public class MainApplication extends Application implements KinectHelper
             PictureButton pictureButton5 = new PictureButton(imageView5, image5);
             pictureButton5.setId(5);
 
+            Image image6 = new Image(new FileInputStream("images\\image-06.jpg"));
+            ImageView imageView6 = new ImageView(image6);
+            PictureButton pictureButton6 = new PictureButton(imageView6, image6);
+            pictureButton5.setId(6);
+
+            Image image7 = new Image(new FileInputStream("images\\image-07.jpg"));
+            ImageView imageView7 = new ImageView(image7);
+            PictureButton pictureButton7 = new PictureButton(imageView7, image7);
+            pictureButton5.setId(7);
+
+            Image image8 = new Image(new FileInputStream("images\\image-08.jpg"));
+            ImageView imageView8 = new ImageView(image8);
+            PictureButton pictureButton8 = new PictureButton(imageView8, image8);
+            pictureButton5.setId(8);
+
+            Image image9 = new Image(new FileInputStream("images\\image-09.jpg"));
+            ImageView imageView9 = new ImageView(image9);
+            PictureButton pictureButton9 = new PictureButton(imageView9, image9);
+            pictureButton5.setId(9);
+
+            Image image10 = new Image(new FileInputStream("images\\image-10.jpg"));
+            ImageView imageView10 = new ImageView(image10);
+            PictureButton pictureButton10 = new PictureButton(imageView10, image10);
+            pictureButton5.setId(10);
+
             pictureButtons.add(pictureButton1);
             pictureButtons.add(pictureButton2);
             pictureButtons.add(pictureButton3);
             pictureButtons.add(pictureButton4);
             pictureButtons.add(pictureButton5);
+            pictureButtons.add(pictureButton6);
+            pictureButtons.add(pictureButton7);
+            pictureButtons.add(pictureButton8);
+            pictureButtons.add(pictureButton9);
+            pictureButtons.add(pictureButton10);
         }
         catch (FileNotFoundException e)
         {
@@ -197,13 +223,55 @@ public class MainApplication extends Application implements KinectHelper
         if (rightHandX >= oldRightHandX + 5 || rightHandX <= oldRightHandX - 5 ||
                 rightHandY >= oldRightHandY + 5 || rightHandY <= oldRightHandY - 5)
         {
-            graphicsContext.clearRect(oldRightHandX, oldRightHandY, 100, 100);
+            cursorGraphicsContext.clearRect(oldRightHandX, oldRightHandY, 100, 100);
             cursor.setPosition(rightHandX, rightHandY);
-            cursor.render(graphicsContext);
+            cursor.render(cursorGraphicsContext);
 
             oldRightHandX = rightHandX;
             oldRightHandY = rightHandY;
         }
+    }
+
+    @Override
+    public void onRightHandSwipedLeft()
+    {
+        for (double i = 0.0; i < 1.0; i = i + 0.1)
+        {
+            try
+            {
+                TimeUnit.MILLISECONDS.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            scrollPane.setHvalue(i);
+        }
+
+        //scrollPane.setHvalue(1.0);
+    }
+
+    @Override
+    public void onRightHandSwipedRight()
+    {
+        for (double i = 1.0; i > 0.0; i = i - 0.1)
+        {
+            try
+            {
+                TimeUnit.MILLISECONDS.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            scrollPane.setHvalue(i);
+        }
+
+        //scrollPane.setHvalue(0.0);
     }
 
     private void setBlackShadowToAllButtons()

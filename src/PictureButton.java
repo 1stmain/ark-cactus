@@ -36,7 +36,7 @@ public class PictureButton
 
     private Rectangle2D getBoundary()
     {
-        return new Rectangle2D(imageView.getBoundsInParent().getMinX(), 652, 200, 100);
+        return new Rectangle2D(imageView.localToScene(imageView.getBoundsInLocal()).getMinX(), 652, 200, 100);
     }
 
     boolean intersects(Cursor cursor)
