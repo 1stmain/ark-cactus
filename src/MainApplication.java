@@ -34,7 +34,6 @@ public class MainApplication extends Application implements KinectHelper
     private ScrollPane scrollPane;
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
     private PictureButton currentlySelectedPictureButton;
-    private boolean isZooming = false;
 
     public static void main(String[] args)
     {
@@ -243,56 +242,48 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onRightHandSwipedLeft()
     {
-        /*if (!isZooming)
+        for (double i = 0.0; i < 1.0; i = i + 0.1)
         {
-            for (double i = 0.0; i < 1.0; i = i + 0.1)
+            try
             {
-                try
-                {
-                    TimeUnit.MILLISECONDS.sleep(10);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-
-                scrollPane.setHvalue(i);
+                TimeUnit.MILLISECONDS.sleep(10);
             }
-        }*/
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
 
-        scrollPane.setHvalue(1.0);
+            scrollPane.setHvalue(i);
+        }
+
+        //scrollPane.setHvalue(1.0);
     }
 
     @Override
     public void onRightHandSwipedRight()
     {
-        /*if (!isZooming)
+        for (double i = 1.0; i > 0.0; i = i - 0.1)
         {
-            for (double i = 1.0; i > 0.0; i = i - 0.1)
+            try
             {
-                try
-                {
-                    TimeUnit.MILLISECONDS.sleep(10);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-
-                scrollPane.setHvalue(i);
+                TimeUnit.MILLISECONDS.sleep(10);
             }
-        }*/
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
 
-        scrollPane.setHvalue(0.0);
+            scrollPane.setHvalue(i);
+        }
+
+        //scrollPane.setHvalue(0.0);
     }
 
     @Override
     public void onZoomInDetected()
     {
-        isZooming = true;
-
         for (int i = 1; i < 11; i++)
         {
             int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
@@ -313,15 +304,11 @@ public class MainApplication extends Application implements KinectHelper
                 System.exit(1);
             }
         }
-
-        isZooming = false;
     }
 
     @Override
     public void onZoomOutDetected()
     {
-        isZooming = true;
-
         for (int i = 10; i > 0; i--)
         {
             int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
@@ -342,8 +329,6 @@ public class MainApplication extends Application implements KinectHelper
                 System.exit(1);
             }
         }
-
-        isZooming = false;
     }
 
     private void setBlackShadowToAllButtons()

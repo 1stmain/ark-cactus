@@ -11,6 +11,7 @@ class Kinect extends J4KSDK
     private float oldLeftHandX = 0;
     private int swipeLeftFrameCount = 0;
     private int swipeRightFrameCount = 0;
+    private int frameCount = 0;
 
     Kinect(KinectHelper aKinectHelper)
     {
@@ -38,6 +39,8 @@ class Kinect extends J4KSDK
     @Override
     public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] floats, float[] floats1, byte[] bytes)
     {
+        frameCount++;
+
         int skeletonNumber = 0;
 
         for (boolean isSkeletonTracked : skeleton_tracked)
@@ -73,14 +76,14 @@ class Kinect extends J4KSDK
         kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
 
         // Detect the right hand being pushed forward
-        if (rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3)
+        if (rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.2)
         {
             rightHandIsPushed = true;
             kinectHelper.onRightHandPushed(true);
         }
 
         // Detect the right hand not being pushed forward
-        else if (oldRightHandZ - rightHandZ < 0.3 && rightHandIsPushed)
+        else if (oldRightHandZ - rightHandZ < 0.2 && rightHandIsPushed)
         {
             rightHandIsPushed = false;
             kinectHelper.onRightHandPushed(false);
@@ -88,25 +91,34 @@ class Kinect extends J4KSDK
 
         // Detect right hand being swiped to the right
         if ((rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3) &&
-                (oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 10))
+                (oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 20))
         {
             swipeRightFrameCount++;
 
+
             if (swipeRightFrameCount > 4)
             {
-                kinectHelper.onRightHandSwipedRight();
+                if (frameCount > 29)
+                {
+                    kinectHelper.onRightHandSwipedRight();
+                    frameCount = 0;
+                }
             }
         }
 
         // Detect right hand being swiped to the left
         else if ((rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3) &&
-                (oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 10))
+                (oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 20))
         {
             swipeLeftFrameCount++;
 
             if (swipeLeftFrameCount > 4)
             {
-                kinectHelper.onRightHandSwipedLeft();
+                if (frameCount > 29)
+                {
+                    kinectHelper.onRightHandSwipedLeft();
+                    frameCount = 0;
+                }
             }
         }
         else
@@ -116,28 +128,28 @@ class Kinect extends J4KSDK
         }
 
         // Detect right hand and left hand being swiped away from each other
-        /*if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 50) &&
-                (oldLeftHandX > leftHandX && oldLeftHandX - leftHandX >= 50))
+        /*if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 20) &&
+                (oldLeftHandX > leftHandX && oldLeftHandX - leftHandX >= 20))
         {
-            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.2)
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
             {
                 kinectHelper.onZoomInDetected();
             }
-            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.2)
+            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
                 kinectHelper.onZoomInDetected();
             }
         }
 
         // Detect right hand and left hand being swiped towards each other
-        else if ((oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 50) &&
-                (oldLeftHandX < leftHandX && leftHandX - oldLeftHandX >= 50))
+        else if ((oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 20) &&
+                (oldLeftHandX < leftHandX && leftHandX - oldLeftHandX >= 20))
         {
-            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.2)
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
             {
                 kinectHelper.onZoomOutDetected();
             }
-            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.2)
+            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
                 kinectHelper.onZoomOutDetected();
             }
