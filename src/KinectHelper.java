@@ -7,4 +7,8 @@ interface KinectHelper
     void onRightHandSwipedRight();
 
     void onRightHandSwipedLeft();
+
+    void onZoomInDetected();
+
+    void onZoomOutDetected();
 }

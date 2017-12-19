@@ -6,8 +6,11 @@ class Kinect extends J4KSDK
     private KinectHelper kinectHelper;
     private boolean rightHandIsPushed = false;
     private boolean isInitialised = false;
-    private float oldRightHandZ = 0;
     private float oldRightHandX = 0;
+    private float oldRightHandZ = 0;
+    private float oldLeftHandX = 0;
+    private int swipeLeftFrameCount = 0;
+    private int swipeRightFrameCount = 0;
 
     Kinect(KinectHelper aKinectHelper)
     {
@@ -48,41 +51,99 @@ class Kinect extends J4KSDK
 
         Skeleton skeleton = getSkeletons()[skeletonNumber];
 
+        // Right hand coordinates
         float rightHandX = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
         float rightHandY = skeleton.get2DJoint(Skeleton.HAND_RIGHT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float rightHandZ = skeleton.get3DJointZ(Skeleton.HAND_RIGHT);
 
+        // Left hand coordinates
+        float leftHandX = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
+        //float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
+        float leftHandZ = skeleton.get3DJointZ(Skeleton.HAND_LEFT);
+
+        // Initialise some variables
         if (!isInitialised)
         {
             oldRightHandZ = rightHandZ;
             oldRightHandX = rightHandX;
+            oldLeftHandX = leftHandX;
             isInitialised = true;
         }
 
-        if (rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.2)
+        kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
+
+        // Detect the right hand being pushed forward
+        if (rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3)
         {
             rightHandIsPushed = true;
             kinectHelper.onRightHandPushed(true);
         }
 
-        if (oldRightHandZ - rightHandZ < 0.2 && rightHandIsPushed)
+        // Detect the right hand not being pushed forward
+        else if (oldRightHandZ - rightHandZ < 0.3 && rightHandIsPushed)
         {
             rightHandIsPushed = false;
             kinectHelper.onRightHandPushed(false);
         }
 
-        if (oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 100)
+        // Detect right hand being swiped to the right
+        if ((rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3) &&
+                (oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 10))
         {
-            kinectHelper.onRightHandSwipedRight();
+            swipeRightFrameCount++;
+
+            if (swipeRightFrameCount > 4)
+            {
+                kinectHelper.onRightHandSwipedRight();
+            }
         }
 
-        if (oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 100)
+        // Detect right hand being swiped to the left
+        else if ((rightHandZ < oldRightHandZ && oldRightHandZ - rightHandZ > 0.3) &&
+                (oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 10))
         {
-            kinectHelper.onRightHandSwipedLeft();
+            swipeLeftFrameCount++;
+
+            if (swipeLeftFrameCount > 4)
+            {
+                kinectHelper.onRightHandSwipedLeft();
+            }
+        }
+        else
+        {
+            swipeLeftFrameCount = 0;
+            swipeRightFrameCount = 0;
         }
 
-        kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
+        // Detect right hand and left hand being swiped away from each other
+        /*if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 50) &&
+                (oldLeftHandX > leftHandX && oldLeftHandX - leftHandX >= 50))
+        {
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.2)
+            {
+                kinectHelper.onZoomInDetected();
+            }
+            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.2)
+            {
+                kinectHelper.onZoomInDetected();
+            }
+        }
+
+        // Detect right hand and left hand being swiped towards each other
+        else if ((oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 50) &&
+                (oldLeftHandX < leftHandX && leftHandX - oldLeftHandX >= 50))
+        {
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.2)
+            {
+                kinectHelper.onZoomOutDetected();
+            }
+            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.2)
+            {
+                kinectHelper.onZoomOutDetected();
+            }
+        }*/
 
         oldRightHandX = rightHandX;
+        oldLeftHandX = leftHandX;
     }
 }

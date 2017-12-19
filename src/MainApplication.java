@@ -2,6 +2,7 @@ import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,6 +10,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -30,6 +33,8 @@ public class MainApplication extends Application implements KinectHelper
     private int oldRightHandY;
     private ScrollPane scrollPane;
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
+    private PictureButton currentlySelectedPictureButton;
+    private boolean isZooming = false;
 
     public static void main(String[] args)
     {
@@ -42,7 +47,7 @@ public class MainApplication extends Application implements KinectHelper
         primaryStage.setTitle(Constants.STAGE_TITLE);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-        StackPane splashScenePane = new StackPane();
+        /*StackPane splashScenePane = new StackPane();
         splashScenePane.setAlignment(Pos.CENTER);
 
         ImageView arkImageView = new ImageView("http://www.theark.in/images/logo_white.png");
@@ -68,7 +73,7 @@ public class MainApplication extends Application implements KinectHelper
         {
             e.printStackTrace();
             System.exit(1);
-        }
+        }*/
 
         setImages();
         setBlackShadowToAllButtons();
@@ -95,6 +100,7 @@ public class MainApplication extends Application implements KinectHelper
         pictureButtons.get(0).getImageView().setEffect(dropShadowRed);
 
         imageGraphicsContext.drawImage(pictureButtons.get(0).getImage(), 0, 0, Constants.STAGE_WIDTH, 636);
+        currentlySelectedPictureButton = pictureButtons.get(0);
 
         Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
@@ -208,6 +214,8 @@ public class MainApplication extends Application implements KinectHelper
                     imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
                     imageGraphicsContext.drawImage(pictureButton.getImage(), 0, 0, Constants.STAGE_WIDTH, 636);
 
+                    currentlySelectedPictureButton = pictureButton;
+
                     DropShadow dropShadowRed = new DropShadow(16, Color.RED);
                     pictureButton.getImageView().setEffect(dropShadowRed);
 
@@ -235,29 +243,66 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onRightHandSwipedLeft()
     {
-        for (double i = 0.0; i < 1.0; i = i + 0.1)
+        /*if (!isZooming)
         {
-            try
+            for (double i = 0.0; i < 1.0; i = i + 0.1)
             {
-                TimeUnit.MILLISECONDS.sleep(10);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-                System.exit(1);
-            }
+                try
+                {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
 
-            scrollPane.setHvalue(i);
-        }
+                scrollPane.setHvalue(i);
+            }
+        }*/
 
-        //scrollPane.setHvalue(1.0);
+        scrollPane.setHvalue(1.0);
     }
 
     @Override
     public void onRightHandSwipedRight()
     {
-        for (double i = 1.0; i > 0.0; i = i - 0.1)
+        /*if (!isZooming)
         {
+            for (double i = 1.0; i > 0.0; i = i - 0.1)
+            {
+                try
+                {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+
+                scrollPane.setHvalue(i);
+            }
+        }*/
+
+        scrollPane.setHvalue(0.0);
+    }
+
+    @Override
+    public void onZoomInDetected()
+    {
+        isZooming = true;
+
+        for (int i = 1; i < 11; i++)
+        {
+            int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
+            int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;
+
+            PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
+            WritableImage newImage = new WritableImage(reader, 0, 0, imageWidth, imageHeight);
+            imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+            imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+
             try
             {
                 TimeUnit.MILLISECONDS.sleep(10);
@@ -267,11 +312,38 @@ public class MainApplication extends Application implements KinectHelper
                 e.printStackTrace();
                 System.exit(1);
             }
-
-            scrollPane.setHvalue(i);
         }
 
-        //scrollPane.setHvalue(0.0);
+        isZooming = false;
+    }
+
+    @Override
+    public void onZoomOutDetected()
+    {
+        isZooming = true;
+
+        for (int i = 10; i > 0; i--)
+        {
+            int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
+            int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;
+
+            PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
+            WritableImage newImage = new WritableImage(reader, 0, 0, imageWidth, imageHeight);
+            imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+            imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+
+            try
+            {
+                TimeUnit.MILLISECONDS.sleep(10);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+
+        isZooming = false;
     }
 
     private void setBlackShadowToAllButtons()
