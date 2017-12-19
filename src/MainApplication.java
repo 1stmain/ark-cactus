@@ -284,7 +284,7 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onZoomInDetected()
     {
-        for (int i = 1; i < 11; i++)
+        for (int i = 1; i < 3; i++)
         {
             int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
             int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;
@@ -309,7 +309,7 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onZoomOutDetected()
     {
-        for (int i = 10; i > 0; i--)
+        for (int i = 2; i > 0; i--)
         {
             int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
             int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;

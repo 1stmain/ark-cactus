@@ -11,7 +11,8 @@ class Kinect extends J4KSDK
     private float oldLeftHandX = 0;
     private int swipeLeftFrameCount = 0;
     private int swipeRightFrameCount = 0;
-    private int frameCount = 0;
+    private int scrollFrameCount = 0;
+    private int zoomFrameCount = 0;
 
     Kinect(KinectHelper aKinectHelper)
     {
@@ -39,7 +40,8 @@ class Kinect extends J4KSDK
     @Override
     public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] floats, float[] floats1, byte[] bytes)
     {
-        frameCount++;
+        scrollFrameCount++;
+        zoomFrameCount++;
 
         int skeletonNumber = 0;
 
@@ -98,10 +100,10 @@ class Kinect extends J4KSDK
 
             if (swipeRightFrameCount > 4)
             {
-                if (frameCount > 29)
+                if (scrollFrameCount > 29)
                 {
                     kinectHelper.onRightHandSwipedRight();
-                    frameCount = 0;
+                    scrollFrameCount = 0;
                 }
             }
         }
@@ -114,10 +116,10 @@ class Kinect extends J4KSDK
 
             if (swipeLeftFrameCount > 4)
             {
-                if (frameCount > 29)
+                if (scrollFrameCount > 29)
                 {
                     kinectHelper.onRightHandSwipedLeft();
-                    frameCount = 0;
+                    scrollFrameCount = 0;
                 }
             }
         }
@@ -128,16 +130,24 @@ class Kinect extends J4KSDK
         }
 
         // Detect right hand and left hand being swiped away from each other
-        /*if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 20) &&
+        if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 20) &&
                 (oldLeftHandX > leftHandX && oldLeftHandX - leftHandX >= 20))
         {
             if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
             {
-                kinectHelper.onZoomInDetected();
+                if (zoomFrameCount > 14)
+                {
+                    kinectHelper.onZoomInDetected();
+                    zoomFrameCount = 0;
+                }
             }
             else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
-                kinectHelper.onZoomInDetected();
+                if (zoomFrameCount > 14)
+                {
+                    kinectHelper.onZoomInDetected();
+                    zoomFrameCount = 0;
+                }
             }
         }
 
@@ -147,13 +157,21 @@ class Kinect extends J4KSDK
         {
             if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
             {
-                kinectHelper.onZoomOutDetected();
+                if (zoomFrameCount > 14)
+                {
+                    kinectHelper.onZoomOutDetected();
+                    zoomFrameCount = 0;
+                }
             }
             else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
-                kinectHelper.onZoomOutDetected();
+                if (zoomFrameCount > 14)
+                {
+                    kinectHelper.onZoomOutDetected();
+                    zoomFrameCount = 0;
+                }
             }
-        }*/
+        }
 
         oldRightHandX = rightHandX;
         oldLeftHandX = leftHandX;
