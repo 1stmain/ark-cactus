@@ -63,7 +63,7 @@ class Kinect extends J4KSDK
 
         // Left hand coordinates
         float leftHandX = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[0];
-        //float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
+        float leftHandY = skeleton.get2DJoint(Skeleton.HAND_LEFT, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT)[1];
         float leftHandZ = skeleton.get3DJointZ(Skeleton.HAND_LEFT);
 
         // Initialise some variables

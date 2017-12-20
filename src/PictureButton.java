@@ -39,6 +39,14 @@ public class PictureButton
         return new Rectangle2D(imageView.localToScene(imageView.getBoundsInLocal()).getMinX(), 652, 200, 100);
     }
 
+    ImageView getButtonImage()
+    {
+        ImageView anImageView = imageView;
+        anImageView.setFitWidth(200);
+        anImageView.setFitHeight(100);
+        return anImageView;
+    }
+
     boolean intersects(Cursor cursor)
     {
         return cursor.getBoundary().intersects(this.getBoundary());

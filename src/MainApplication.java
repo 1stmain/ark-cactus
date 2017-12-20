@@ -85,7 +85,7 @@ public class MainApplication extends Application implements KinectHelper
 
         for (PictureButton pictureButton : pictureButtons)
         {
-            hBox.getChildren().add(pictureButton.getImageView());
+            hBox.getChildren().add(pictureButton.getButtonImage());
         }
 
         scrollPane = new ScrollPane(hBox);
@@ -131,7 +131,7 @@ public class MainApplication extends Application implements KinectHelper
             cursor = new Cursor();
             cursor.setImage(new FileInputStream("images\\hand.png"));
 
-            Image image1 = new Image(new FileInputStream("images\\image-01.jpeg"));
+            Image image1 = new Image(new FileInputStream("images\\image-01.jpg"));
             ImageView imageView1 = new ImageView(image1);
             PictureButton pictureButton1 = new PictureButton(imageView1, image1);
             pictureButton1.setId(1);
@@ -156,7 +156,7 @@ public class MainApplication extends Application implements KinectHelper
             PictureButton pictureButton5 = new PictureButton(imageView5, image5);
             pictureButton5.setId(5);
 
-            Image image6 = new Image(new FileInputStream("images\\image-06.jpg"));
+            Image image6 = new Image(new FileInputStream("images\\image-06.jpeg"));
             ImageView imageView6 = new ImageView(image6);
             PictureButton pictureButton6 = new PictureButton(imageView6, image6);
             pictureButton5.setId(6);
@@ -181,6 +181,16 @@ public class MainApplication extends Application implements KinectHelper
             PictureButton pictureButton10 = new PictureButton(imageView10, image10);
             pictureButton5.setId(10);
 
+            Image image11 = new Image(new FileInputStream("images\\image-11.jpg"));
+            ImageView imageView11 = new ImageView(image11);
+            PictureButton pictureButton11 = new PictureButton(imageView11, image11);
+            pictureButton5.setId(11);
+
+            Image image12 = new Image(new FileInputStream("images\\image-12.jpg"));
+            ImageView imageView12 = new ImageView(image12);
+            PictureButton pictureButton12 = new PictureButton(imageView12, image12);
+            pictureButton5.setId(12);
+
             pictureButtons.add(pictureButton1);
             pictureButtons.add(pictureButton2);
             pictureButtons.add(pictureButton3);
@@ -191,6 +201,8 @@ public class MainApplication extends Application implements KinectHelper
             pictureButtons.add(pictureButton8);
             pictureButtons.add(pictureButton9);
             pictureButtons.add(pictureButton10);
+            pictureButtons.add(pictureButton11);
+            pictureButtons.add(pictureButton12);
         }
         catch (FileNotFoundException e)
         {
@@ -284,13 +296,13 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onZoomInDetected()
     {
-        for (int i = 1; i < 3; i++)
+        for (double i = 1; i <= 2; i = i + 0.1)
         {
-            int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
-            int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;
+            double imageWidth = currentlySelectedPictureButton.getImage().getWidth() / i;
+            double imageHeight = currentlySelectedPictureButton.getImage().getHeight() / i;
 
             PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
-            WritableImage newImage = new WritableImage(reader, 0, 0, imageWidth, imageHeight);
+            WritableImage newImage = new WritableImage(reader, 0, 0, (int) imageWidth, (int) imageHeight);
             imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
             imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
 
@@ -309,13 +321,13 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onZoomOutDetected()
     {
-        for (int i = 2; i > 0; i--)
+        for (double i = 2; i >= 1; i = i - 0.1)
         {
-            int imageWidth = (int) currentlySelectedPictureButton.getImage().getWidth() / i;
-            int imageHeight = (int) currentlySelectedPictureButton.getImage().getHeight() / i;
+            double imageWidth = currentlySelectedPictureButton.getImage().getWidth() / i;
+            double imageHeight = currentlySelectedPictureButton.getImage().getHeight() / i;
 
             PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
-            WritableImage newImage = new WritableImage(reader, 0, 0, imageWidth, imageHeight);
+            WritableImage newImage = new WritableImage(reader, 0, 0, (int) imageWidth, (int) imageHeight);
             imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
             imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
 
@@ -329,6 +341,12 @@ public class MainApplication extends Application implements KinectHelper
                 System.exit(1);
             }
         }
+
+        PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
+        WritableImage newImage = new WritableImage(reader, 0, 0,
+                (int) currentlySelectedPictureButton.getImage().getWidth(), (int) currentlySelectedPictureButton.getImage().getHeight());
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
     }
 
     private void setBlackShadowToAllButtons()
