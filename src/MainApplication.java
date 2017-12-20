@@ -254,32 +254,53 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onRightHandSwipedLeft()
     {
-        for (double i = 0.0; i < 1.0; i = i + 0.1)
+        if (scrollPane.getHvalue() == 1.0)
         {
-            try
-            {
-                TimeUnit.MILLISECONDS.sleep(10);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-                System.exit(1);
-            }
-
-            scrollPane.setHvalue(i);
+            return;
         }
 
-        //scrollPane.setHvalue(1.0);
+        scrollPane.setHvalue(1.0);
+
+        /*Runnable r = new Runnable()
+        {
+            public void run()
+            {
+                for (int i = 1; i < 11; i++)
+                {
+                    scrollPane.setHvalue(i / 10);
+
+                    try
+                    {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
+            }
+        };
+
+        Thread t = new Thread(r);
+        t.start();*/
     }
 
     @Override
     public void onRightHandSwipedRight()
     {
-        for (double i = 1.0; i > 0.0; i = i - 0.1)
+        if (scrollPane.getHvalue() == 0.0)
+        {
+            return;
+        }
+
+        scrollPane.setHvalue(0.0);
+
+        /*for (int i = 10; i > 0; i--)
         {
             try
             {
-                TimeUnit.MILLISECONDS.sleep(10);
+                TimeUnit.MILLISECONDS.sleep(100);
             }
             catch (InterruptedException e)
             {
@@ -287,10 +308,8 @@ public class MainApplication extends Application implements KinectHelper
                 System.exit(1);
             }
 
-            scrollPane.setHvalue(i);
-        }
-
-        //scrollPane.setHvalue(0.0);
+            scrollPane.setHvalue(i / 10);
+        }*/
     }
 
     @Override
