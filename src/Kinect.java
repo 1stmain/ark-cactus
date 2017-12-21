@@ -110,64 +110,45 @@ class Kinect extends J4KSDK
         }
 
         // Detect right hand being swiped to the right
-        if ((rightHandXWindow.get(0) < rightHandXWindow.get(29) &&
-                rightHandXWindow.get(29) - rightHandXWindow.get(0) >= 400))
+        if (rightHandXWindow.get(0) < rightHandXWindow.get(14) &&
+                rightHandXWindow.get(14) - rightHandXWindow.get(0) >= 400 &&
+                leftHandY > torsoY)
         {
             kinectHelper.onRightHandSwipedRight();
         }
 
         // Detect right hand being swiped to the left
-        else if ((rightHandXWindow.get(0) > rightHandXWindow.get(29) &&
-                rightHandXWindow.get(0) - rightHandXWindow.get(29) >= 400))
+        else if (rightHandXWindow.get(0) > rightHandXWindow.get(14) &&
+                rightHandXWindow.get(0) - rightHandXWindow.get(14) >= 400 &&
+                leftHandY > torsoY)
         {
             kinectHelper.onRightHandSwipedLeft();
         }
 
         // Detect right hand and left hand being swiped away from each other
-        /*if ((oldRightHandX < rightHandX && rightHandX - oldRightHandX >= 20) &&
-                (oldLeftHandX > leftHandX && oldLeftHandX - leftHandX >= 20))
+        if ((rightHandXWindow.get(0) < rightHandXWindow.get(29) &&
+                rightHandXWindow.get(29) - rightHandXWindow.get(0) >= 200) &&
+                (leftHandXWindow.get(0) > leftHandXWindow.get(29) &&
+                        leftHandXWindow.get(0) - leftHandXWindow.get(29) >= 200))
         {
-            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1 ||
+                    leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
-                if (zoomFrameCount > 29)
-                {
-                    kinectHelper.onZoomInDetected();
-                    zoomFrameCount = 0;
-                }
-            }
-            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
-            {
-                if (zoomFrameCount > 29)
-                {
-                    kinectHelper.onZoomInDetected();
-                    zoomFrameCount = 0;
-                }
+                kinectHelper.onZoomInDetected();
             }
         }
 
         // Detect right hand and left hand being swiped towards each other
-        else if ((oldRightHandX > rightHandX && oldRightHandX - rightHandX >= 20) &&
-                (oldLeftHandX < leftHandX && leftHandX - oldLeftHandX >= 20))
+        else if ((rightHandXWindow.get(0) > rightHandXWindow.get(29) &&
+                rightHandXWindow.get(0) - rightHandXWindow.get(29) >= 200) &&
+                (leftHandXWindow.get(0) < leftHandXWindow.get(29) &&
+                        leftHandXWindow.get(29) - leftHandXWindow.get(0) >= 200))
         {
-            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1)
+            if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1 ||
+                    leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
             {
-                if (zoomFrameCount > 29)
-                {
-                    kinectHelper.onZoomOutDetected();
-                    zoomFrameCount = 0;
-                }
-            }
-            else if (leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
-            {
-                if (zoomFrameCount > 29)
-                {
-                    kinectHelper.onZoomOutDetected();
-                    zoomFrameCount = 0;
-                }
+                kinectHelper.onZoomOutDetected();
             }
         }
-
-        oldRightHandX = rightHandX;
-        oldLeftHandX = leftHandX;*/
     }
 }

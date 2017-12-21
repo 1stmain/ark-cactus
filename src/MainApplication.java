@@ -28,12 +28,14 @@ public class MainApplication extends Application implements KinectHelper
 {
     private GraphicsContext cursorGraphicsContext;
     private GraphicsContext imageGraphicsContext;
+    private Canvas imageCanvas;
     private Cursor cursor;
     private int oldRightHandX;
     private int oldRightHandY;
     private ScrollPane scrollPane;
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
     private PictureButton currentlySelectedPictureButton;
+    private boolean isZomedIn = false;
 
     public static void main(String[] args)
     {
@@ -92,7 +94,7 @@ public class MainApplication extends Application implements KinectHelper
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        Canvas imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
+        imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
 
         DropShadow dropShadowRed = new DropShadow(16, Color.RED);
@@ -116,6 +118,8 @@ public class MainApplication extends Application implements KinectHelper
         primaryStage.show();
 
         initialiseKinect();
+
+        isZomedIn = false;
     }
 
     private void initialiseKinect()
@@ -315,13 +319,102 @@ public class MainApplication extends Application implements KinectHelper
     @Override
     public void onZoomInDetected()
     {
-        for (double i = 1; i <= 2; i = i + 0.1)
+        if (isZomedIn)
         {
-            double imageWidth = currentlySelectedPictureButton.getImage().getWidth() / i;
-            double imageHeight = currentlySelectedPictureButton.getImage().getHeight() / i;
+            return;
+        }
 
-            PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
-            WritableImage newImage = new WritableImage(reader, 0, 0, (int) imageWidth, (int) imageHeight);
+        isZomedIn = true;
+
+        Image image = currentlySelectedPictureButton.getImage();
+
+        PixelReader reader = image.getPixelReader();
+
+
+        WritableImage newImage = new WritableImage(reader, (int) (image.getWidth() / 8), (int) (image.getHeight() / 8),
+                (int) (image.getWidth() / 1.2), (int) (image.getHeight() / 1.2));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage2 = new WritableImage(reader, (int) (image.getWidth() / 7), (int) (image.getHeight() / 7),
+                (int) (image.getWidth() / 1.4), (int) (image.getHeight() / 1.4));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage2, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage3 = new WritableImage(reader, (int) (image.getWidth() / 6), (int) (image.getHeight() / 6),
+                (int) (image.getWidth() / 1.6), (int) (image.getHeight() / 1.6));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage3, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage4 = new WritableImage(reader, (int) (image.getWidth() / 5), (int) (image.getHeight() / 5),
+                (int) (image.getWidth() / 1.8), (int) (image.getHeight() / 1.8));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage4, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage5 = new WritableImage(reader, (int) image.getWidth() / 4, (int) image.getHeight() / 4,
+                (int) image.getWidth() / 2, (int) image.getHeight() / 2);
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage5, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        /*for (double i = 1; i < 2; i = i + 0.1)
+        {
+            int imageWidth = (int) (image.getWidth() / i);
+            int imageHeight = (int) (image.getHeight() / i);
+            int imageX = (int)image.getWidth() - imageWidth;
+            int imageY = (int)image.getHeight() - imageHeight;
+
+            System.out.println("\nImage width, height: " + (int) image.getWidth() + ", " + (int) image.getHeight());
+            System.out.println("I: " + i);
+            System.out.println("Calc. Image width, height: " + imageWidth + ", " + imageHeight);
+            System.out.println("Calc. Image x, y: " + imageX + ", " + imageY);
+
+            WritableImage newImage = new WritableImage(reader, imageX, imageY, imageWidth, imageHeight);
+
             imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
             imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
 
@@ -334,13 +427,92 @@ public class MainApplication extends Application implements KinectHelper
                 e.printStackTrace();
                 System.exit(1);
             }
-        }
+        }*/
     }
 
     @Override
     public void onZoomOutDetected()
     {
-        for (double i = 2; i >= 1; i = i - 0.1)
+        if (!isZomedIn)
+        {
+            return;
+        }
+
+        isZomedIn = false;
+
+        Image image = currentlySelectedPictureButton.getImage();
+
+        PixelReader reader = image.getPixelReader();
+
+        WritableImage newImage4 = new WritableImage(reader, (int) (image.getWidth() / 5), (int) (image.getHeight() / 5),
+                (int) (image.getWidth() / 1.8), (int) (image.getHeight() / 1.8));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage4, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage3 = new WritableImage(reader, (int) (image.getWidth() / 6), (int) (image.getHeight() / 6),
+                (int) (image.getWidth() / 1.6), (int) (image.getHeight() / 1.6));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage3, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        WritableImage newImage2 = new WritableImage(reader, (int) (image.getWidth() / 7), (int) (image.getHeight() / 7),
+                (int) (image.getWidth() / 1.4), (int) (image.getHeight() / 1.4));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage2, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+
+        WritableImage newImage = new WritableImage(reader, (int) (image.getWidth() / 8), (int) (image.getHeight() / 8),
+                (int) (image.getWidth() / 1.2), (int) (image.getHeight() / 1.2));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        try
+        {
+            TimeUnit.MILLISECONDS.sleep(10);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(image, 0, 0, Constants.STAGE_WIDTH, 636);
+
+        /*for (double i = 2; i >= 1; i = i - 0.1)
         {
             double imageWidth = currentlySelectedPictureButton.getImage().getWidth() / i;
             double imageHeight = currentlySelectedPictureButton.getImage().getHeight() / i;
@@ -365,7 +537,7 @@ public class MainApplication extends Application implements KinectHelper
         WritableImage newImage = new WritableImage(reader, 0, 0,
                 (int) currentlySelectedPictureButton.getImage().getWidth(), (int) currentlySelectedPictureButton.getImage().getHeight());
         imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);*/
     }
 
     private void setBlackShadowToAllButtons()
