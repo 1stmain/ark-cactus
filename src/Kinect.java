@@ -95,15 +95,15 @@ class Kinect extends J4KSDK
         kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
 
         // Detect the right hand being pushed forward
-        if ((rightHandZWindow.get(0) > rightHandZWindow.get(29)) &&
-                (rightHandZWindow.get(0) - rightHandZWindow.get(29) >= 0.2))
+        if ((rightHandZWindow.get(0) > rightHandZWindow.get(14)) &&
+                (rightHandZWindow.get(0) - rightHandZWindow.get(14) >= 0.2))
         {
             kinectHelper.onRightHandPushed(true);
         }
 
         // Detect the right hand not being pushed forward
-        else if ((rightHandZWindow.get(0) < rightHandZWindow.get(29)) &&
-                (rightHandZWindow.get(29) - rightHandZWindow.get(0) >= 0.2))
+        else if ((rightHandZWindow.get(0) < rightHandZWindow.get(14)) &&
+                (rightHandZWindow.get(14) - rightHandZWindow.get(0) >= 0.2))
         {
             kinectHelper.onRightHandPushed(false);
         }
@@ -125,10 +125,11 @@ class Kinect extends J4KSDK
         }
 
         // Detect right hand and left hand being swiped away from each other
-        if ((rightHandXWindow.get(0) < rightHandXWindow.get(29) &&
-                rightHandXWindow.get(29) - rightHandXWindow.get(0) >= 200) &&
+        if ((rightHandY < torsoY) && (leftHandY < torsoY) &&
+                (rightHandXWindow.get(0) < rightHandXWindow.get(29) &&
+                        rightHandXWindow.get(29) - rightHandXWindow.get(0) >= 100) &&
                 (leftHandXWindow.get(0) > leftHandXWindow.get(29) &&
-                        leftHandXWindow.get(0) - leftHandXWindow.get(29) >= 200))
+                        leftHandXWindow.get(0) - leftHandXWindow.get(29) >= 100))
         {
             if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1 ||
                     leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
@@ -138,10 +139,11 @@ class Kinect extends J4KSDK
         }
 
         // Detect right hand and left hand being swiped towards each other
-        else if ((rightHandXWindow.get(0) > rightHandXWindow.get(29) &&
-                rightHandXWindow.get(0) - rightHandXWindow.get(29) >= 200) &&
+        else if ((rightHandY < torsoY) && (leftHandY < torsoY) &&
+                (rightHandXWindow.get(0) > rightHandXWindow.get(29) &&
+                        rightHandXWindow.get(0) - rightHandXWindow.get(29) >= 100) &&
                 (leftHandXWindow.get(0) < leftHandXWindow.get(29) &&
-                        leftHandXWindow.get(29) - leftHandXWindow.get(0) >= 200))
+                        leftHandXWindow.get(29) - leftHandXWindow.get(0) >= 100))
         {
             if (leftHandZ < rightHandZ && rightHandZ - leftHandZ < 0.1 ||
                     leftHandZ > rightHandZ && leftHandZ - rightHandZ < 0.1)
