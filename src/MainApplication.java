@@ -28,7 +28,6 @@ public class MainApplication extends Application implements KinectHelper
 {
     private GraphicsContext cursorGraphicsContext;
     private GraphicsContext imageGraphicsContext;
-    private Canvas imageCanvas;
     private Cursor cursor;
     private int oldRightHandX;
     private int oldRightHandY;
@@ -94,7 +93,7 @@ public class MainApplication extends Application implements KinectHelper
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
+        Canvas imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
 
         DropShadow dropShadowRed = new DropShadow(16, Color.RED);
