@@ -95,15 +95,14 @@ class Kinect extends J4KSDK
         kinectHelper.onRightHandMoved((int) rightHandX, (int) rightHandY);
 
         // Detect the right hand being pushed forward
-        if ((rightHandY > torsoY) && (rightHandZWindow.get(0) > rightHandZWindow.get(29)) &&
+        if ((rightHandZWindow.get(0) > rightHandZWindow.get(29)) &&
                 (rightHandZWindow.get(0) - rightHandZWindow.get(29) >= 0.2))
         {
             kinectHelper.onRightHandPushed(true);
         }
 
         // Detect the right hand not being pushed forward
-        else if ((rightHandY > torsoY) &&
-                (rightHandZWindow.get(0) < rightHandZWindow.get(29)) &&
+        else if ((rightHandZWindow.get(0) < rightHandZWindow.get(29)) &&
                 (rightHandZWindow.get(29) - rightHandZWindow.get(0) >= 0.2))
         {
             kinectHelper.onRightHandPushed(false);
