@@ -64,7 +64,10 @@ public class MainApplication extends Application implements KinectHelper
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
+        //get the visible screen resolution
         Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+
+        // canvas area for displaying the selected image is a % of the complete screen
         canvasAreaHeight = Constants.CANVAS_AREA*primaryScreenBounds.getHeight();
         Canvas imageCanvas = new Canvas(primaryScreenBounds.getWidth(), canvasAreaHeight);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
