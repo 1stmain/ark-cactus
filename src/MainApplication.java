@@ -96,11 +96,15 @@ public class MainApplication extends Application implements KinectHelper
         Canvas imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
 
-        DropShadow dropShadowRed = new DropShadow(16, Color.RED);
-        pictureButtons.get(0).getImageView().setEffect(dropShadowRed);
-
-        imageGraphicsContext.drawImage(pictureButtons.get(0).getImage(), 0, 0, Constants.STAGE_WIDTH, 636);
         currentlySelectedPictureButton = pictureButtons.get(0);
+
+        DropShadow dropShadowRed = new DropShadow(16, Color.RED);
+        currentlySelectedPictureButton.getImageView().setEffect(dropShadowRed);
+
+        imageGraphicsContext.drawImage(currentlySelectedPictureButton.getImage(),
+                (Constants.STAGE_WIDTH - currentlySelectedPictureButton.getImage()
+                        .getWidth()) / 2, (636 - currentlySelectedPictureButton
+                        .getImage().getHeight()) / 2);
 
         Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
@@ -225,8 +229,11 @@ public class MainApplication extends Application implements KinectHelper
                 {
                     setBlackShadowToAllButtons();
 
+                    Image image = pictureButton.getImage();
+
                     imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-                    imageGraphicsContext.drawImage(pictureButton.getImage(), 0, 0, Constants.STAGE_WIDTH, 636);
+                    imageGraphicsContext.drawImage(image,
+                            (Constants.STAGE_WIDTH - image.getWidth()) / 2, (636 - image.getHeight()) / 2);
 
                     currentlySelectedPictureButton = pictureButton;
 
@@ -329,104 +336,15 @@ public class MainApplication extends Application implements KinectHelper
 
         PixelReader reader = image.getPixelReader();
 
+        drawZoomFrame(reader, image, 8, 1.2);
 
-        WritableImage newImage = new WritableImage(reader, (int) (image.getWidth() / 8), (int) (image.getHeight() / 8),
-                (int) (image.getWidth() / 1.2), (int) (image.getHeight() / 1.2));
+        drawZoomFrame(reader, image, 7, 1.4);
 
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
+        drawZoomFrame(reader, image, 6, 1.6);
 
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        drawZoomFrame(reader, image, 5, 1.8);
 
-        WritableImage newImage2 = new WritableImage(reader, (int) (image.getWidth() / 7), (int) (image.getHeight() / 7),
-                (int) (image.getWidth() / 1.4), (int) (image.getHeight() / 1.4));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage2, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        WritableImage newImage3 = new WritableImage(reader, (int) (image.getWidth() / 6), (int) (image.getHeight() / 6),
-                (int) (image.getWidth() / 1.6), (int) (image.getHeight() / 1.6));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage3, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        WritableImage newImage4 = new WritableImage(reader, (int) (image.getWidth() / 5), (int) (image.getHeight() / 5),
-                (int) (image.getWidth() / 1.8), (int) (image.getHeight() / 1.8));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage4, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        WritableImage newImage5 = new WritableImage(reader, (int) image.getWidth() / 4, (int) image.getHeight() / 4,
-                (int) image.getWidth() / 2, (int) image.getHeight() / 2);
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage5, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        /*for (double i = 1; i < 2; i = i + 0.1)
-        {
-            int imageWidth = (int) (image.getWidth() / i);
-            int imageHeight = (int) (image.getHeight() / i);
-            int imageX = (int)image.getWidth() - imageWidth;
-            int imageY = (int)image.getHeight() - imageHeight;
-
-            System.out.println("\nImage width, height: " + (int) image.getWidth() + ", " + (int) image.getHeight());
-            System.out.println("I: " + i);
-            System.out.println("Calc. Image width, height: " + imageWidth + ", " + imageHeight);
-            System.out.println("Calc. Image x, y: " + imageX + ", " + imageY);
-
-            WritableImage newImage = new WritableImage(reader, imageX, imageY, imageWidth, imageHeight);
-
-            imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-            imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
-
-            try
-            {
-                TimeUnit.MILLISECONDS.sleep(10);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }*/
+        drawZoomFrame(reader, image, 4, 2);
     }
 
     @Override
@@ -443,11 +361,29 @@ public class MainApplication extends Application implements KinectHelper
 
         PixelReader reader = image.getPixelReader();
 
-        WritableImage newImage4 = new WritableImage(reader, (int) (image.getWidth() / 5), (int) (image.getHeight() / 5),
-                (int) (image.getWidth() / 1.8), (int) (image.getHeight() / 1.8));
+        drawZoomFrame(reader, image, 5, 1.8);
+
+        drawZoomFrame(reader, image, 6, 1.6);
+
+        drawZoomFrame(reader, image, 7, 1.4);
+
+        drawZoomFrame(reader, image, 8, 1.2);
 
         imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage4, 0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(image,
+                (Constants.STAGE_WIDTH - image.getWidth()) / 2, (636 - image.getHeight()) / 2);
+    }
+
+    private void drawZoomFrame(PixelReader reader, Image image, double coordinateDivisor, double sizeDivisor)
+    {
+        WritableImage newImage = new WritableImage(reader,
+                (int) (image.getWidth() / coordinateDivisor),
+                (int) (image.getHeight() / coordinateDivisor),
+                (int) (image.getWidth() / sizeDivisor), (int) (image.getHeight() / sizeDivisor));
+
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.drawImage(newImage, (Constants.STAGE_WIDTH - image.getWidth()) / 2,
+                (636 - image.getHeight()) / 2, image.getWidth(), image.getHeight());
 
         try
         {
@@ -458,85 +394,6 @@ public class MainApplication extends Application implements KinectHelper
             e.printStackTrace();
             System.exit(1);
         }
-
-        WritableImage newImage3 = new WritableImage(reader, (int) (image.getWidth() / 6), (int) (image.getHeight() / 6),
-                (int) (image.getWidth() / 1.6), (int) (image.getHeight() / 1.6));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage3, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        WritableImage newImage2 = new WritableImage(reader, (int) (image.getWidth() / 7), (int) (image.getHeight() / 7),
-                (int) (image.getWidth() / 1.4), (int) (image.getHeight() / 1.4));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage2, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-
-        WritableImage newImage = new WritableImage(reader, (int) (image.getWidth() / 8), (int) (image.getHeight() / 8),
-                (int) (image.getWidth() / 1.2), (int) (image.getHeight() / 1.2));
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        try
-        {
-            TimeUnit.MILLISECONDS.sleep(10);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(image, 0, 0, Constants.STAGE_WIDTH, 636);
-
-        /*for (double i = 2; i >= 1; i = i - 0.1)
-        {
-            double imageWidth = currentlySelectedPictureButton.getImage().getWidth() / i;
-            double imageHeight = currentlySelectedPictureButton.getImage().getHeight() / i;
-
-            PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
-            WritableImage newImage = new WritableImage(reader, 0, 0, (int) imageWidth, (int) imageHeight);
-            imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-            imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);
-
-            try
-            {
-                TimeUnit.MILLISECONDS.sleep(10);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-                System.exit(1);
-            }
-        }
-
-        PixelReader reader = currentlySelectedPictureButton.getImage().getPixelReader();
-        WritableImage newImage = new WritableImage(reader, 0, 0,
-                (int) currentlySelectedPictureButton.getImage().getWidth(), (int) currentlySelectedPictureButton.getImage().getHeight());
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
-        imageGraphicsContext.drawImage(newImage, 0, 0, Constants.STAGE_WIDTH, 636);*/
     }
 
     private void setBlackShadowToAllButtons()
