@@ -1,7 +1,6 @@
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,10 +14,9 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -35,6 +33,7 @@ public class MainApplication extends Application implements KinectHelper
     private ArrayList<PictureButton> pictureButtons = new ArrayList<>();
     private PictureButton currentlySelectedPictureButton;
     private boolean isZomedIn = false;
+    private Double canvasAreaHeight;
 
     public static void main(String[] args)
     {
@@ -46,34 +45,6 @@ public class MainApplication extends Application implements KinectHelper
     {
         primaryStage.setTitle(Constants.STAGE_TITLE);
         primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
-
-        /*StackPane splashScenePane = new StackPane();
-        splashScenePane.setAlignment(Pos.CENTER);
-
-        ImageView arkImageView = new ImageView("http://www.theark.in/images/logo_white.png");
-        arkImageView.setPreserveRatio(true);
-        arkImageView.setFitWidth(400);
-        arkImageView.setFitHeight(300);
-
-        splashScenePane.getChildren().add(arkImageView);
-
-        Scene launchScene = new Scene(splashScenePane);
-        launchScene.setFill(Color.web("#16272E"));
-
-        primaryStage.setScene(launchScene);
-        primaryStage.setMaximized(true);
-        primaryStage.setFullScreen(true);
-        primaryStage.show();
-
-        try
-        {
-            TimeUnit.SECONDS.sleep(3);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }*/
 
         setImages();
         setBlackShadowToAllButtons();
@@ -93,7 +64,9 @@ public class MainApplication extends Application implements KinectHelper
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        Canvas imageCanvas = new Canvas(Constants.STAGE_WIDTH, 636);
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        canvasAreaHeight = Constants.CANVAS_AREA*primaryScreenBounds.getHeight();
+        Canvas imageCanvas = new Canvas(primaryScreenBounds.getWidth(), canvasAreaHeight);
         imageGraphicsContext = imageCanvas.getGraphicsContext2D();
 
         currentlySelectedPictureButton = pictureButtons.get(0);
@@ -103,7 +76,7 @@ public class MainApplication extends Application implements KinectHelper
 
         imageGraphicsContext.drawImage(currentlySelectedPictureButton.getImage(),
                 (Constants.STAGE_WIDTH - currentlySelectedPictureButton.getImage()
-                        .getWidth()) / 2, (636 - currentlySelectedPictureButton
+                        .getWidth()) / 2, (canvasAreaHeight - currentlySelectedPictureButton
                         .getImage().getHeight()) / 2);
 
         Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
@@ -138,65 +111,18 @@ public class MainApplication extends Application implements KinectHelper
             cursor = new Cursor();
             cursor.setImage(new FileInputStream("images\\hand.png"));
 
-            Image image1 = new Image(new FileInputStream("images\\image-01.jpg"));
-            ImageView imageView1 = new ImageView(image1);
-            PictureButton pictureButton1 = new PictureButton(imageView1, image1);
-            pictureButton1.setId(1);
-
-            Image image2 = new Image(new FileInputStream("images\\image-02.jpg"));
-            ImageView imageView2 = new ImageView(image2);
-            PictureButton pictureButton2 = new PictureButton(imageView2, image2);
-            pictureButton2.setId(2);
-
-            Image image3 = new Image(new FileInputStream("images\\image-03.jpg"));
-            ImageView imageView3 = new ImageView(image3);
-            PictureButton pictureButton3 = new PictureButton(imageView3, image3);
-            pictureButton3.setId(3);
-
-            Image image4 = new Image(new FileInputStream("images\\image-04.jpg"));
-            ImageView imageView4 = new ImageView(image4);
-            PictureButton pictureButton4 = new PictureButton(imageView4, image4);
-            pictureButton4.setId(4);
-
-            Image image5 = new Image(new FileInputStream("images\\image-05.jpg"));
-            ImageView imageView5 = new ImageView(image5);
-            PictureButton pictureButton5 = new PictureButton(imageView5, image5);
-            pictureButton5.setId(5);
-
-            Image image6 = new Image(new FileInputStream("images\\image-06.jpeg"));
-            ImageView imageView6 = new ImageView(image6);
-            PictureButton pictureButton6 = new PictureButton(imageView6, image6);
-            pictureButton5.setId(6);
-
-            Image image7 = new Image(new FileInputStream("images\\image-07.jpg"));
-            ImageView imageView7 = new ImageView(image7);
-            PictureButton pictureButton7 = new PictureButton(imageView7, image7);
-            pictureButton5.setId(7);
-
-            Image image8 = new Image(new FileInputStream("images\\image-08.jpg"));
-            ImageView imageView8 = new ImageView(image8);
-            PictureButton pictureButton8 = new PictureButton(imageView8, image8);
-            pictureButton5.setId(8);
-
-            Image image9 = new Image(new FileInputStream("images\\image-09.jpg"));
-            ImageView imageView9 = new ImageView(image9);
-            PictureButton pictureButton9 = new PictureButton(imageView9, image9);
-            pictureButton5.setId(9);
-
-            Image image10 = new Image(new FileInputStream("images\\image-10.jpg"));
-            ImageView imageView10 = new ImageView(image10);
-            PictureButton pictureButton10 = new PictureButton(imageView10, image10);
-            pictureButton5.setId(10);
-
-            Image image11 = new Image(new FileInputStream("images\\image-11.jpg"));
-            ImageView imageView11 = new ImageView(image11);
-            PictureButton pictureButton11 = new PictureButton(imageView11, image11);
-            pictureButton5.setId(11);
-
-            Image image12 = new Image(new FileInputStream("images\\image-12.jpg"));
-            ImageView imageView12 = new ImageView(image12);
-            PictureButton pictureButton12 = new PictureButton(imageView12, image12);
-            pictureButton5.setId(12);
+            PictureButton pictureButton1 = setPictureButton("images\\image-01.jpg",12);
+            PictureButton pictureButton2 = setPictureButton("images\\image-02.jpg",12);
+            PictureButton pictureButton3 = setPictureButton("images\\image-03.jpg",12);
+            PictureButton pictureButton4 = setPictureButton("images\\image-04.jpg",12);
+            PictureButton pictureButton5 = setPictureButton("images\\image-05.jpg",12);
+            PictureButton pictureButton6 = setPictureButton("images\\image-06.jpg",12);
+            PictureButton pictureButton7 = setPictureButton("images\\image-07.jpg",12);
+            PictureButton pictureButton8 = setPictureButton("images\\image-08.jpg",12);
+            PictureButton pictureButton9 = setPictureButton("images\\image-09.jpg",12);
+            PictureButton pictureButton10 = setPictureButton("images\\image-10.jpg",12);
+            PictureButton pictureButton11 = setPictureButton("images\\image-11.jpg",12);
+            PictureButton pictureButton12 = setPictureButton("images\\image-12.jpg",12);
 
             pictureButtons.add(pictureButton1);
             pictureButtons.add(pictureButton2);
@@ -218,6 +144,19 @@ public class MainApplication extends Application implements KinectHelper
         }
     }
 
+    private PictureButton setPictureButton(String imgPath, int id) {
+        Image image = null;
+        try {
+            image = new Image(new FileInputStream(imgPath));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ImageView imageView = new ImageView(image);
+        PictureButton pictureButton = new PictureButton(imageView, image);
+        pictureButton.setId(id);
+        return pictureButton;
+    }
+
     @Override
     public void onRightHandPushed(boolean isRightHandPushed)
     {
@@ -231,9 +170,9 @@ public class MainApplication extends Application implements KinectHelper
 
                     Image image = pictureButton.getImage();
 
-                    imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+                    imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
                     imageGraphicsContext.drawImage(image,
-                            (Constants.STAGE_WIDTH - image.getWidth()) / 2, (636 - image.getHeight()) / 2);
+                            (Constants.STAGE_WIDTH - image.getWidth()) / 2, (canvasAreaHeight - image.getHeight()) / 2);
 
                     currentlySelectedPictureButton = pictureButton;
 
@@ -369,9 +308,9 @@ public class MainApplication extends Application implements KinectHelper
 
         drawZoomFrame(reader, image, 8, 1.2);
 
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
         imageGraphicsContext.drawImage(image,
-                (Constants.STAGE_WIDTH - image.getWidth()) / 2, (636 - image.getHeight()) / 2);
+                (Constants.STAGE_WIDTH - image.getWidth()) / 2, (canvasAreaHeight - image.getHeight()) / 2);
     }
 
     private void drawZoomFrame(PixelReader reader, Image image, double coordinateDivisor, double sizeDivisor)
@@ -381,9 +320,9 @@ public class MainApplication extends Application implements KinectHelper
                 (int) (image.getHeight() / coordinateDivisor),
                 (int) (image.getWidth() / sizeDivisor), (int) (image.getHeight() / sizeDivisor));
 
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, 636);
+        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
         imageGraphicsContext.drawImage(newImage, (Constants.STAGE_WIDTH - image.getWidth()) / 2,
-                (636 - image.getHeight()) / 2, image.getWidth(), image.getHeight());
+                (canvasAreaHeight - image.getHeight()) / 2, image.getWidth(), image.getHeight());
 
         try
         {
