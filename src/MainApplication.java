@@ -77,10 +77,7 @@ public class MainApplication extends Application implements KinectHelper
         DropShadow dropShadowRed = new DropShadow(16, Color.RED);
         currentlySelectedPictureButton.getImageView().setEffect(dropShadowRed);
 
-        imageGraphicsContext.drawImage(currentlySelectedPictureButton.getImage(),
-                (Constants.STAGE_WIDTH - currentlySelectedPictureButton.getImage()
-                        .getWidth()) / 2, (canvasAreaHeight - currentlySelectedPictureButton
-                        .getImage().getHeight()) / 2);
+        placeImageOnCanvas(currentlySelectedPictureButton.getImage());
 
         Canvas cursorCanvas = new Canvas(Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         cursorGraphicsContext = cursorCanvas.getGraphicsContext2D();
@@ -160,6 +157,13 @@ public class MainApplication extends Application implements KinectHelper
         return pictureButton;
     }
 
+    private void placeImageOnCanvas(Image placeImg) {
+        double imgWidth = canvasAreaHeight/placeImg.getHeight()*placeImg.getWidth();
+        imageGraphicsContext.drawImage(placeImg,
+                (Constants.STAGE_WIDTH-imgWidth)/2, 0,
+                canvasAreaHeight/placeImg.getHeight()*placeImg.getWidth(), canvasAreaHeight );
+    }
+
     @Override
     public void onRightHandPushed(boolean isRightHandPushed)
     {
@@ -174,8 +178,7 @@ public class MainApplication extends Application implements KinectHelper
                     Image image = pictureButton.getImage();
 
                     imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
-                    imageGraphicsContext.drawImage(image,
-                            (Constants.STAGE_WIDTH - image.getWidth()) / 2, (canvasAreaHeight - image.getHeight()) / 2);
+                    placeImageOnCanvas(image);
 
                     currentlySelectedPictureButton = pictureButton;
 
@@ -312,8 +315,8 @@ public class MainApplication extends Application implements KinectHelper
         drawZoomFrame(reader, image, 8, 1.2);
 
         imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
-        imageGraphicsContext.drawImage(image,
-                (Constants.STAGE_WIDTH - image.getWidth()) / 2, (canvasAreaHeight - image.getHeight()) / 2);
+        placeImageOnCanvas(image);
+
     }
 
     private void drawZoomFrame(PixelReader reader, Image image, double coordinateDivisor, double sizeDivisor)
@@ -324,8 +327,7 @@ public class MainApplication extends Application implements KinectHelper
                 (int) (image.getWidth() / sizeDivisor), (int) (image.getHeight() / sizeDivisor));
 
         imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
-        imageGraphicsContext.drawImage(newImage, (Constants.STAGE_WIDTH - image.getWidth()) / 2,
-                (canvasAreaHeight - image.getHeight()) / 2, image.getWidth(), image.getHeight());
+        placeImageOnCanvas(newImage);
 
         try
         {
