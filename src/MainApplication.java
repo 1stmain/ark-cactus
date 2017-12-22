@@ -280,16 +280,12 @@ public class MainApplication extends Application implements KinectHelper
         Image image = currentlySelectedPictureButton.getImage();
 
         PixelReader reader = image.getPixelReader();
-
         drawZoomFrame(reader, image, 8, 1.2);
-
         drawZoomFrame(reader, image, 7, 1.4);
-
         drawZoomFrame(reader, image, 6, 1.6);
-
         drawZoomFrame(reader, image, 5, 1.8);
-
         drawZoomFrame(reader, image, 4, 2);
+
     }
 
     @Override
@@ -305,17 +301,10 @@ public class MainApplication extends Application implements KinectHelper
         Image image = currentlySelectedPictureButton.getImage();
 
         PixelReader reader = image.getPixelReader();
-
         drawZoomFrame(reader, image, 5, 1.8);
-
         drawZoomFrame(reader, image, 6, 1.6);
-
         drawZoomFrame(reader, image, 7, 1.4);
-
         drawZoomFrame(reader, image, 8, 1.2);
-
-        imageGraphicsContext.clearRect(0, 0, Constants.STAGE_WIDTH, canvasAreaHeight);
-        placeImageOnCanvas(image);
 
     }
 
